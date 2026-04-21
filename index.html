@@ -2,39 +2,8 @@
 <html>
 <head>
   <title>JioMart Deals</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 10px;
-    }
-
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
-
-    .card {
-      background: #1e293b;
-      padding: 10px;
-      border-radius: 10px;
-    }
-
-    img {
-      width: 100%;
-      border-radius: 8px;
-    }
-  </style>
 </head>
-<body>
+<body style="background:#0f172a;color:white;text-align:center;font-family:Arial">
 
 <h2>🔥 60%+ Deals</h2>
 
@@ -54,25 +23,36 @@ async function loadDeals() {
 
   document.getElementById("loading").innerText = "Loading...";
 
-  const res = await fetch(`/api/deals?page=${page}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`/api/deals?page=${page}`);
+    const data = await res.json();
 
-  data.deals.forEach(p => {
-    document.getElementById("grid").innerHTML += `
-      <div class="card">
-        <a href="${p.link}" target="_blank">
-          <img src="${p.image}">
-          <h4>${p.name}</h4>
-        </a>
-        <p>₹${p.price} <del>₹${p.mrp}</del></p>
-        <p style="color:lime">${p.discount}% OFF</p>
-      </div>
-    `;
-  });
+    if (!data.deals || data.deals.length === 0) {
+      document.getElementById("loading").innerText = "No more deals";
+      return;
+    }
 
-  page = data.nextPage;
-  loading = false;
-  document.getElementById("loading").innerText = "Scroll to load more...";
+    data.deals.forEach(p => {
+      document.getElementById("grid").innerHTML += `
+        <div style="background:#1e293b;margin:10px;padding:10px;border-radius:10px">
+          <a href="${p.link}" target="_blank">
+            <img src="${p.image}" width="150"><br>
+            ${p.name}
+          </a>
+          <p>₹${p.price} <del>₹${p.mrp}</del></p>
+          <p style="color:lime">${p.discount}% OFF</p>
+        </div>
+      `;
+    });
+
+    page = data.nextPage;
+    loading = false;
+    document.getElementById("loading").innerText = "Scroll to load more...";
+
+  } catch (e) {
+    document.getElementById("loading").innerText = "Error loading deals";
+    loading = false;
+  }
 }
 
 function start() {
