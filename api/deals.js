@@ -14,31 +14,20 @@ export default async function handler(req, res) {
 
     const html = await response.text();
 
-    // Extract JSON data from page
-    const match = html.match(/window.__PRELOADED_STATE__ = (.*?);<\/script>/);
+    // 🔥 NEW: extract product JSON blocks (more reliable)
+    const matches = [...html.matchAll(/"product_name":"(.*?)".*?"final_price":(.*?),.*?"price":(.*?),.*?"image":"(.*?)".*?"url":"(.*?)"/g)];
 
-    if (!match) {
-      return res.status(500).json({ error: "No data found" });
-    }
+    let deals = matches.map(m => {
+      const name = m[1];
+      const price = parseFloat(m[2]);
+      const mrp = parseFloat(m[3]);
+      const image = "https://www.jiomart.com/images/product/" + m[4];
+      const link = "https://www.jiomart.com" + m[5];
 
-    const data = JSON.parse(match[1]);
+      const discount = Math.round(((mrp - price) / mrp) * 100);
 
-    const products = data?.search?.products || [];
-
-    const deals = products
-      .map(p => {
-        const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-
-        return {
-          name: p.name,
-          price: p.price,
-          mrp: p.mrp,
-          discount,
-          image: p.image,
-          link: `https://www.jiomart.com/p/${p.slug}`
-        };
-      })
-      .filter(p => p.discount >= 60);
+      return { name, price, mrp, discount, image, link };
+    }).filter(p => p.discount >= 60);
 
     res.status(200).json({
       deals,
