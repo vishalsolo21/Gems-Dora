@@ -1,71 +1,413 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>JioMart Deals</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadbury Gems Code Generator</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#1E88E5,#42A5F5,#90CAF9);
+overflow:hidden;
+position:relative;
+}
+
+body::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background-image:
+radial-gradient(circle,#ff1744 12px,transparent 13px),
+radial-gradient(circle,#ffeb3b 12px,transparent 13px),
+radial-gradient(circle,#4caf50 12px,transparent 13px),
+radial-gradient(circle,#ff9800 12px,transparent 13px),
+radial-gradient(circle,#9c27b0 12px,transparent 13px);
+background-size:160px 160px;
+opacity:.25;
+animation:bgmove 25s linear infinite;
+}
+
+@keyframes bgmove{
+from{transform:translateY(0);}
+to{transform:translateY(-160px);}
+}
+
+.container{
+width:95%;
+max-width:480px;
+background:#fff;
+border-radius:30px;
+padding:30px;
+text-align:center;
+box-shadow:0 20px 50px rgba(0,0,0,.25);
+position:relative;
+z-index:10;
+}
+
+h1{
+font-size:32px;
+color:#1565C0;
+margin-bottom:8px;
+}
+
+.sub{
+font-size:15px;
+color:#555;
+margin-bottom:25px;
+}
+
+#codeBox{
+background:#E3F2FD;
+border:4px dashed #1E88E5;
+border-radius:20px;
+padding:25px;
+font-size:34px;
+font-weight:bold;
+letter-spacing:2px;
+color:#0D47A1;
+margin-bottom:25px;
+min-height:90px;
+display:flex;
+align-items:center;
+justify-content:center;
+word-break:break-all;
+transition:.3s;
+}
+
+button{
+width:100%;
+padding:16px;
+font-size:18px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+font-weight:bold;
+transition:.25s;
+margin-top:12px;
+}
+
+#generateBtn{
+background:#1565C0;
+color:white;
+}
+
+#generateBtn:hover{
+background:#0D47A1;
+transform:scale(1.03);
+}
+
+#copyBtn{
+background:#FFD600;
+color:#333;
+}
+
+#copyBtn:hover{
+background:#FFEA00;
+}
+
+.footer{
+margin-top:25px;
+font-size:14px;
+color:#666;
+}
+
+.footer span{
+color:#2E7D32;
+font-weight:bold;
+}
+
+.doraemon{
+position:absolute;
+top:-55px;
+left:50%;
+transform:translateX(-50%);
+font-size:70px;
+animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+0%,100%{transform:translateX(-50%) translateY(0);}
+50%{transform:translateX(-50%) translateY(-10px);}
+}
+
+.sparkle{
+position:absolute;
+font-size:24px;
+animation:spin 8s linear infinite;
+}
+
+.s1{top:40px;left:30px;}
+.s2{top:70px;right:35px;}
+.s3{bottom:80px;left:20px;}
+.s4{bottom:60px;right:25px;}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+</style>
 </head>
-<body style="background:#0f172a;color:white;text-align:center;font-family:Arial">
 
-<h2>🔥 60%+ Deals</h2>
+<body>
 
-<input id="pin" placeholder="Enter Pincode">
-<button onclick="start()">Search</button>
+<div class="sparkle s1">🍬</div>
+<div class="sparkle s2">🍫</div>
+<div class="sparkle s3">🍭</div>
+<div class="sparkle s4">🍬</div>
 
-<div id="grid"></div>
-<p id="loading">Scroll to load more...</p>
+<div class="container">
+
+<div class="doraemon">🐱</div>
+
+<h1>Cadbury Gems</h1>
+
+<div class="sub">
+Random Batch Code Generator
+</div>
+
+<div id="codeBox">
+Press Generate
+</div>
+
+<button id="generateBtn">
+🎲 Generate
+</button>
+
+<button id="copyBtn">
+📋 Copy Code
+</button>
+
+<div class="footer">
+Made with ❤️ by Vishal |
+<span>RAIGANJLOOTERS</span>
+</div>
+
+</div>
 
 <script>
-let page = 1;
-let loading = false;
 
-async function loadDeals() {
-  if (loading) return;
-  loading = true;
+const usedCodes = new Set();
 
-  document.getElementById("loading").innerText = "Loading...";
+function rand(min,max){
+return Math.floor(Math.random()*(max-min+1))+min;
+}
+  function generateCode(){
 
-  try {
-    const res = await fetch(`/api/deals?page=${page}`);
-    const data = await res.json();
+let code;
 
-    if (!data.deals || data.deals.length === 0) {
-      document.getElementById("loading").innerText = "No more deals";
-      return;
-    }
+do{
 
-    data.deals.forEach(p => {
-      document.getElementById("grid").innerHTML += `
-        <div style="background:#1e293b;margin:10px;padding:10px;border-radius:10px">
-          <a href="${p.link}" target="_blank">
-            <img src="${p.image}" width="150"><br>
-            ${p.name}
-          </a>
-          <p>₹${p.price} <del>₹${p.mrp}</del></p>
-          <p style="color:lime">${p.discount}% OFF</p>
-        </div>
-      `;
-    });
+const series = String(rand(1,4)).padStart(2,"0");
 
-    page = data.nextPage;
-    loading = false;
-    document.getElementById("loading").innerText = "Scroll to load more...";
+// 10–19
+const block = rand(10,19);
 
-  } catch (e) {
-    document.getElementById("loading").innerText = "Error loading deals";
-    loading = false;
-  }
+// 00–60
+const suffix = String(rand(0,60)).padStart(2,"0");
+
+code = `K605${series}B${block}${suffix}`;
+
+}while(usedCodes.has(code));
+
+usedCodes.add(code);
+
+const box = document.getElementById("codeBox");
+
+box.style.transform="scale(0.8)";
+box.style.opacity="0.3";
+
+setTimeout(()=>{
+
+box.innerHTML=code;
+
+box.style.transform="scale(1.08)";
+box.style.opacity="1";
+
+setTimeout(()=>{
+box.style.transform="scale(1)";
+},180);
+
+},120);
+
 }
 
-function start() {
-  document.getElementById("grid").innerHTML = "";
-  page = 1;
-  loadDeals();
+document
+.getElementById("generateBtn")
+.addEventListener("click",generateCode);
+
+document
+.getElementById("copyBtn")
+.addEventListener("click",()=>{
+
+const text=document
+.getElementById("codeBox")
+.innerText;
+
+if(text==="Press Generate"){
+
+alert("Generate a code first!");
+
+return;
+
 }
 
-window.onscroll = () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    loadDeals();
-  }
-};
+navigator.clipboard.writeText(text);
+
+const btn=document.getElementById("copyBtn");
+
+btn.innerHTML="✅ Copied!";
+
+setTimeout(()=>{
+
+btn.innerHTML="📋 Copy Code";
+
+},1500);
+
+});
+
+// Generate first code automatically
+generateCode();
+  
+// Floating colorful Gems
+const colors=[
+"#ff1744",
+"#ffeb3b",
+"#4caf50",
+"#ff9800",
+"#9c27b0",
+"#00bcd4",
+"#e91e63"
+];
+
+function createGem(){
+
+const gem=document.createElement("div");
+
+gem.innerHTML="●";
+
+gem.style.position="fixed";
+gem.style.left=Math.random()*window.innerWidth+"px";
+gem.style.top="-30px";
+gem.style.fontSize=(12+Math.random()*22)+"px";
+gem.style.color=colors[Math.floor(Math.random()*colors.length)];
+gem.style.opacity="0.9";
+gem.style.pointerEvents="none";
+gem.style.zIndex="1";
+
+document.body.appendChild(gem);
+
+let y=-30;
+const speed=1+Math.random()*2;
+
+const timer=setInterval(()=>{
+
+y+=speed;
+
+gem.style.top=y+"px";
+
+if(y>window.innerHeight+30){
+
+clearInterval(timer);
+
+gem.remove();
+
+}
+
+},16);
+
+}
+
+setInterval(createGem,450);
+
+
+// Button animation
+const generateBtn=document.getElementById("generateBtn");
+
+generateBtn.addEventListener("click",()=>{
+
+generateBtn.animate([
+
+{transform:"scale(1) rotate(0deg)"},
+{transform:"scale(0.92) rotate(-4deg)"},
+{transform:"scale(1.08) rotate(4deg)"},
+{transform:"scale(1) rotate(0deg)"}
+
+],{
+
+duration:350
+
+});
+
+});
+
+
+// Doraemon bell animation
+const dora=document.querySelector(".doraemon");
+
+setInterval(()=>{
+
+dora.animate([
+
+{transform:"translateX(-50%) translateY(0) rotate(0deg)"},
+{transform:"translateX(-50%) translateY(-8px) rotate(-8deg)"},
+{transform:"translateX(-50%) translateY(0) rotate(8deg)"},
+{transform:"translateX(-50%) translateY(0) rotate(0deg)"}
+
+],{
+
+duration:700
+
+});
+
+},3000);
+
+// Keyboard shortcut (Space = Generate)
+document.addEventListener("keydown",(e)=>{
+
+if(e.code==="Space"){
+
+e.preventDefault();
+
+generateCode();
+
+}
+
+});
+
+// Double-click the code to copy it
+document.getElementById("codeBox").addEventListener("dblclick",()=>{
+
+const text=document.getElementById("codeBox").innerText;
+
+navigator.clipboard.writeText(text);
+
+const box=document.getElementById("codeBox");
+
+const old=box.innerHTML;
+
+box.innerHTML="✅ Copied!";
+
+setTimeout(()=>{
+
+box.innerHTML=text;
+
+},900);
+
+});
+
 </script>
 
 </body>
